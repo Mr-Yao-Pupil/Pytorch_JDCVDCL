@@ -9,7 +9,8 @@ import cfg
 from util.DataLoad_Mode import collate_fn4train, collate_fn4val
 from DCL_Net import MainNet
 
-module_savepath = r"/home/ubuntu/Yaozhichao/Litong_JDCV_DCL/weight"
+module_savepath = r"weight"
+premodulepath = r"weight/resnet50-19c8e357.pth"
 
 if __name__ == '__main__':
     os.environ['CUDA_DEVICE_ORDRE'] = 'PCI_BUS_ID'
@@ -117,7 +118,7 @@ if __name__ == '__main__':
                     print("平均损失：", acc_loss / 25)
 
                     if acc / len(test_datasets) >= 0.88:
-                        save_path = os.path.join(module_savepath, f"{epoch}_{i}.pth")
+                        save_path = os.path.join(module_savepath, f"{epoch}_{i}_{float(acc / len(test_datasets) * 100)}.pth")
                         torch.save(net.state_dict(), save_path)
             net.train()
         epoch += 1
