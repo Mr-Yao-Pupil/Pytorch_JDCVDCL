@@ -1,17 +1,15 @@
 from DCL_Dataset import MyDataset
 from torch.utils.data import DataLoader
-import torch
 import torch.nn as nn
 import os
 import numpy as np
-
+from util.DataLoad_Mode import *
 from torch.autograd import Variable
 import cfg
 from util.DataLoad_Mode import collate_fn4train, collate_fn4val
 from DCL_Net import MainNet
 
 module_savepath = r"/home/ubuntu/Yaozhichao/Litong_JDCV_DCL/weight"
-premodulepath = r"/home/ubuntu/Yaozhichao/Litong_JDCV_DCL/weight/resnet50-19c8e357.pth"
 
 if __name__ == '__main__':
     os.environ['CUDA_DEVICE_ORDRE'] = 'PCI_BUS_ID'
@@ -37,6 +35,7 @@ if __name__ == '__main__':
     net = net.to(device)
 
     opt = torch.optim.Adam(net.parameters())
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(opt, milestones=[30, 80], gamma=0.1)
 
     epoch = 1
     train_datasets = MyDataset(anno_dir=cfg.ANNO_DIR,
@@ -122,3 +121,4 @@ if __name__ == '__main__':
                         torch.save(net.state_dict(), save_path)
             net.train()
         epoch += 1
+        scheduler.step()
